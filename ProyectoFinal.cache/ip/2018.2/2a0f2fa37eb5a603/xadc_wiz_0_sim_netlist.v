@@ -1,10 +1,10 @@
 // Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
-// Date        : Thu May 13 15:30:20 2021
+// Date        : Thu May 13 14:49:59 2021
 // Host        : MTYA7435-01 running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim
-//               C:/Users/A01039835/Documents/GitHub/ProyectoFinal/ProyectoFinal.srcs/sources_1/ip/xadc_wiz_0/xadc_wiz_0_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top decalper_eb_ot_sdeen_pot_pi_dehcac_xnilix -prefix
+//               decalper_eb_ot_sdeen_pot_pi_dehcac_xnilix_ xadc_wiz_0_sim_netlist.v
 // Design      : xadc_wiz_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -13,7 +13,7 @@
 `timescale 1 ps / 1 ps
 
 (* NotValidForBitStream *)
-module xadc_wiz_0
+module decalper_eb_ot_sdeen_pot_pi_dehcac_xnilix
    (reset_in,
     vauxp2,
     vauxn2,
@@ -82,7 +82,7 @@ module xadc_wiz_0
     .INIT_45(16'h0000),
     .INIT_46(16'h0000),
     .INIT_47(16'h0000),
-    .INIT_48(16'h0800),
+    .INIT_48(16'h0000),
     .INIT_49(16'h0C0C),
     .INIT_4A(16'h0000),
     .INIT_4B(16'h0000),
