@@ -1,10 +1,10 @@
-// Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
-// Tool Version: Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
-// Date        : Thu May 13 15:30:20 2021
-// Host        : MTYA7435-01 running 64-bit major release  (build 9200)
+// Tool Version: Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
+// Date        : Mon May 24 16:52:28 2021
+// Host        : DESKTOP-DOV70PO running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
-//               C:/Users/A01039835/Documents/GitHub/ProyectoFinal/ProyectoFinal.srcs/sources_1/ip/xadc_wiz_0/xadc_wiz_0_sim_netlist.v
+//               c:/Users/alber/Documents/Gits/ProyectoFinal/ProyectoFinal.srcs/sources_1/ip/xadc_wiz_0/xadc_wiz_0_sim_netlist.v
 // Design      : xadc_wiz_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -14,7 +14,14 @@
 
 (* NotValidForBitStream *)
 module xadc_wiz_0
-   (reset_in,
+   (daddr_in,
+    den_in,
+    di_in,
+    dwe_in,
+    do_out,
+    drdy_out,
+    dclk_in,
+    reset_in,
     vauxp2,
     vauxn2,
     vauxp3,
@@ -30,6 +37,13 @@ module xadc_wiz_0
     alarm_out,
     vp_in,
     vn_in);
+  input [6:0]daddr_in;
+  input den_in;
+  input [15:0]di_in;
+  input dwe_in;
+  output [15:0]do_out;
+  output drdy_out;
+  input dclk_in;
   input reset_in;
   input vauxp2;
   input vauxn2;
@@ -50,6 +64,13 @@ module xadc_wiz_0
   wire alarm_out;
   wire busy_out;
   wire [4:0]channel_out;
+  wire [6:0]daddr_in;
+  wire dclk_in;
+  wire den_in;
+  wire [15:0]di_in;
+  wire [15:0]do_out;
+  wire drdy_out;
+  wire dwe_in;
   wire eoc_out;
   wire eos_out;
   wire reset_in;
@@ -63,26 +84,24 @@ module xadc_wiz_0
   wire vauxp3;
   wire vn_in;
   wire vp_in;
-  wire NLW_U0_DRDY_UNCONNECTED;
   wire NLW_U0_JTAGBUSY_UNCONNECTED;
   wire NLW_U0_JTAGLOCKED_UNCONNECTED;
   wire NLW_U0_JTAGMODIFIED_UNCONNECTED;
   wire NLW_U0_OT_UNCONNECTED;
   wire [6:0]NLW_U0_ALM_UNCONNECTED;
-  wire [15:0]NLW_U0_DO_UNCONNECTED;
   wire [4:0]NLW_U0_MUXADDR_UNCONNECTED;
 
   (* box_type = "PRIMITIVE" *) 
   XADC #(
-    .INIT_40(16'h0000),
+    .INIT_40(16'h8000),
     .INIT_41(16'h21AF),
-    .INIT_42(16'h0400),
+    .INIT_42(16'h1900),
     .INIT_43(16'h0000),
     .INIT_44(16'h0000),
     .INIT_45(16'h0000),
     .INIT_46(16'h0000),
     .INIT_47(16'h0000),
-    .INIT_48(16'h0800),
+    .INIT_48(16'h0000),
     .INIT_49(16'h0C0C),
     .INIT_4A(16'h0000),
     .INIT_4B(16'h0000),
@@ -116,13 +135,13 @@ module xadc_wiz_0
         .CHANNEL(channel_out),
         .CONVST(1'b0),
         .CONVSTCLK(1'b0),
-        .DADDR({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
-        .DCLK(1'b0),
-        .DEN(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
-        .DO(NLW_U0_DO_UNCONNECTED[15:0]),
-        .DRDY(NLW_U0_DRDY_UNCONNECTED),
-        .DWE(1'b0),
+        .DADDR(daddr_in),
+        .DCLK(dclk_in),
+        .DEN(den_in),
+        .DI(di_in),
+        .DO(do_out),
+        .DRDY(drdy_out),
+        .DWE(dwe_in),
         .EOC(eoc_out),
         .EOS(eos_out),
         .JTAGBUSY(NLW_U0_JTAGBUSY_UNCONNECTED),
@@ -144,12 +163,15 @@ module glbl ();
 
     parameter ROC_WIDTH = 100000;
     parameter TOC_WIDTH = 0;
+    parameter GRES_WIDTH = 10000;
+    parameter GRES_START = 10000;
 
 //--------   STARTUP Globals --------------
     wire GSR;
     wire GTS;
     wire GWE;
     wire PRLD;
+    wire GRESTORE;
     tri1 p_up_tmp;
     tri (weak1, strong0) PLL_LOCKG = p_up_tmp;
 
@@ -162,6 +184,7 @@ module glbl ();
     reg GSR_int;
     reg GTS_int;
     reg PRLD_int;
+    reg GRESTORE_int;
 
 //--------   JTAG Globals --------------
     wire JTAG_TDO_GLBL;
@@ -189,6 +212,7 @@ module glbl ();
     assign (strong1, weak0) GSR = GSR_int;
     assign (strong1, weak0) GTS = GTS_int;
     assign (weak1, weak0) PRLD = PRLD_int;
+    assign (strong1, weak0) GRESTORE = GRESTORE_int;
 
     initial begin
 	GSR_int = 1'b1;
@@ -202,6 +226,14 @@ module glbl ();
 	GTS_int = 1'b1;
 	#(TOC_WIDTH)
 	GTS_int = 1'b0;
+    end
+
+    initial begin 
+	GRESTORE_int = 1'b0;
+	#(GRES_START);
+	GRESTORE_int = 1'b1;
+	#(GRES_WIDTH);
+	GRESTORE_int = 1'b0;
     end
 
 endmodule

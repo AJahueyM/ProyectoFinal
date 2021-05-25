@@ -12,7 +12,7 @@ ENTITY lcd_driver IS
     lcd_data   : OUT   STD_LOGIC_VECTOR(7 DOWNTO 0)); --data signals for lcd
 END lcd_driver;
 
-ARCHITECTURE driver OF lcd_driver IS
+ARCHITECTURE Behavioral OF lcd_driver IS
   TYPE CONTROL IS(power_up, initialize, ready, send);
   SIGNAL    state      : CONTROL;
   CONSTANT  freq       : INTEGER := 100; --system clock frequency in MHz
@@ -139,4 +139,4 @@ BEGIN
     
     END IF;
   END PROCESS;
-END driver;
+END Behavioral;

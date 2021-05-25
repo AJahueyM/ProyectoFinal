@@ -55,6 +55,13 @@ use UNISIM.VCOMPONENTS.ALL;
 entity xadc_wiz_0 is
    port
    (
+    daddr_in        : in  STD_LOGIC_VECTOR (6 downto 0);     -- Address bus for the dynamic reconfiguration port
+    den_in          : in  STD_LOGIC;                         -- Enable Signal for the dynamic reconfiguration port
+    di_in           : in  STD_LOGIC_VECTOR (15 downto 0);    -- Input data bus for the dynamic reconfiguration port
+    dwe_in          : in  STD_LOGIC;                         -- Write Enable for the dynamic reconfiguration port
+    do_out          : out  STD_LOGIC_VECTOR (15 downto 0);   -- Output data bus for dynamic reconfiguration port
+    drdy_out        : out  STD_LOGIC;                        -- Data ready signal for the dynamic reconfiguration port
+    dclk_in         : in  STD_LOGIC;                         -- Clock input for the dynamic reconfiguration port
     reset_in        : in  STD_LOGIC;                         -- Reset signal for the System Monitor control logic
     vauxp2          : in  STD_LOGIC;                         -- Auxiliary Channel 2
     vauxn2          : in  STD_LOGIC;
@@ -77,7 +84,7 @@ end xadc_wiz_0;
 architecture xilinx of xadc_wiz_0 is
 
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "xadc_wiz_0,xadc_wiz_v3_3_5,{component_name=xadc_wiz_0,enable_axi=false,enable_axi4stream=false,dclk_frequency=100,enable_busy=true,enable_convst=false,enable_convstclk=false,enable_dclk=false,enable_drp=false,enable_eoc=true,enable_eos=true,enable_vbram_alaram=false,enable_vccddro_alaram=false,enable_Vccint_Alaram=false,enable_Vccaux_alaram=falseenable_vccpaux_alaram=false,enable_vccpint_alaram=false,ot_alaram=false,user_temp_alaram=false,timing_mode=continuous,channel_averaging=None,sequencer_mode=on,startup_channel_selection=contineous_sequence}";
+  attribute CORE_GENERATION_INFO of xilinx : architecture is "xadc_wiz_0,xadc_wiz_v3_3_8,{component_name=xadc_wiz_0,enable_axi=false,enable_axi4stream=false,dclk_frequency=100,enable_busy=true,enable_convst=false,enable_convstclk=false,enable_dclk=true,enable_drp=true,enable_eoc=true,enable_eos=true,enable_vbram_alaram=false,enable_vccddro_alaram=false,enable_Vccint_Alaram=false,enable_Vccaux_alaram=falseenable_vccpaux_alaram=false,enable_vccpint_alaram=false,ot_alaram=false,user_temp_alaram=false,timing_mode=continuous,channel_averaging=None,sequencer_mode=on,startup_channel_selection=contineous_sequence}";
 
 
   signal FLOAT_VCCAUX_ALARM : std_logic;
@@ -143,10 +150,10 @@ begin
 
  U0 : XADC
      generic map(
-        INIT_40 => X"0000", -- config reg 0
+        INIT_40 => X"8000", -- config reg 0
         INIT_41 => X"21AF", -- config reg 1
-        INIT_42 => X"0400", -- config reg 2
-        INIT_48 => X"0800", -- Sequencer channel selection
+        INIT_42 => X"1900", -- config reg 2
+        INIT_48 => X"0000", -- Sequencer channel selection
         INIT_49 => X"0C0C", -- Sequencer channel selection
         INIT_4A => X"0000", -- Sequencer Average selection
         INIT_4B => X"0000", -- Sequencer Average selection
@@ -171,19 +178,19 @@ begin
 port map (
         CONVST              => '0',
         CONVSTCLK           => '0',
-        DADDR(6 downto 0)   => "0000000",
-        DCLK                => '0',
-        DEN                 => '0',
-        DI(15 downto 0)     => "0000000000000000",
-        DWE                 => '0',
+        DADDR(6 downto 0)   => daddr_in(6 downto 0),
+        DCLK                => dclk_in,
+        DEN                 => den_in,
+        DI(15 downto 0)     => di_in(15 downto 0),
+        DWE                 => dwe_in,
         RESET               => reset_in,
         VAUXN(15 downto 0)  => aux_channel_n(15 downto 0),
         VAUXP(15 downto 0)  => aux_channel_p(15 downto 0),
         ALM                 => alm_int,
         BUSY                => busy_out,
         CHANNEL(4 downto 0) => channel_out(4 downto 0),
-        DO                  => open,
-        DRDY                => open,
+        DO(15 downto 0)     => do_out(15 downto 0),
+        DRDY                => drdy_out,
         EOC                 => eoc_out,
         EOS                 => eos_out,
         JTAGBUSY            => open,

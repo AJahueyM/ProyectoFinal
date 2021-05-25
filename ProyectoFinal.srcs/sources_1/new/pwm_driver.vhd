@@ -5,7 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity pwm_driver is  
 port (
     clk100m : in std_logic;
-    level  : in std_logic_vector(7 downto 0);
+    level  : in integer;
     pwm_out : out std_logic
 );
 end pwm_driver;
@@ -33,8 +33,16 @@ variable cur : u20 := counter;
 variable level_int: integer := 0;
 begin
     if ((clk100m = '1' and clk100m'event) ) then
-        level_int := to_integer(unsigned(level)) / 255;
-        duty_cycle <= level_int * 200_000 + 50_000; -- Change duty cycle depending on level_int, from 50k to 250k
+        level_int := level;
+        
+        if(level_int > 255) then
+            level_int := 255;
+        elsif(level_int < 0) then
+            level_int := 0;
+        end if;
+        
+        level_int := (level_int * 100 / 255);
+        duty_cycle <= level_int * 2000 + 50_000; -- Change duty cycle depending on level_int, from 50k to 250k
         
         cur := cur + 1;  
         counter <= cur;
